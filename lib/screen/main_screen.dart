@@ -11,14 +11,14 @@ class MainScreen extends StatelessWidget {
       'Trang chu',
       'The gioi',
       'Kinh doanh',
-      'The thao',
+      'Giao duc',
       'Khoa hoc'
     ];
     List listUrl = [
-      'https://vnexpress.net/rss/tin-moi-nhat.rss',
+      'https://vnexpress.net/rss/giai-tri.rss',
       'https://vnexpress.net/rss/the-gioi.rss',
       'https://vnexpress.net/rss/kinh-doanh.rss',
-      'https://vnexpress.net/rss/the-thao.rss',
+      'https://vnexpress.net/rss/giao-duc.rss',
       'https://vnexpress.net/rss/khoa-hoc.rss'
     ];
 
