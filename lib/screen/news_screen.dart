@@ -1,10 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:new_app/network/rss.dart';
 import 'package:xml2json/xml2json.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' show parse;
+import 'package:url_launcher/url_launcher.dart';
 
 class NewsScreen extends StatefulWidget {
   String url;
@@ -51,7 +53,7 @@ class _NewsScreenState extends State<NewsScreen> {
         future: readRss(widget.url),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           } else {
@@ -61,25 +63,37 @@ class _NewsScreenState extends State<NewsScreen> {
                 },
                 itemCount: news.length,
                 itemBuilder: (context, index) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Image(
-                        image: NetworkImage(
-                            getImgUrl(news[index]['description']['__cdata'])),
-                        width: 80,
-                        height: 60,
-                      ),
-                      GestureDetector(
-                        child: Expanded(
-                          child: Text(
-                            '${news[index]['title']['\$t']}',
-                            softWrap: true,
-                          ),
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Image(
+                          image: NetworkImage(
+                              getImgUrl(news[index]['description']['__cdata'])),
+                          width: 80,
+                          height: 60,
                         ),
-                        onTap: (){},
-                      )
-                    ],
+                        const SizedBox(
+                          width: 8,
+                        ),
+                        Flexible(
+                          child: GestureDetector(
+                            child: Text(
+                              '${news[index]['title']['\$t']}',
+                              // softWrap: true,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            onTap: () async {
+                              String newUrl = news[index]['link']['\$t'];
+                              final Uri url = Uri.parse(newUrl);
+                              if (!await launchUrl(url)) {
+                                throw Exception('Could not launch $url');
+                              }
+                            },
+                          ),
+                        )
+                      ],
+                    ),
                   );
                 });
           }
